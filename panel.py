@@ -62,6 +62,7 @@ class RigPanel(Panel):
 
       # Right Eye #
       right_eye = eyes_row.column()
+      right_eye1 = eyes_row.column()
 
       right_eye.label(text="Right Eye")
       right_eye.prop(head, "[\"Right_Eye_Close\"]", slider=True, text="Closing")
