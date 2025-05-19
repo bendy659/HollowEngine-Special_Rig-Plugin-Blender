@@ -1,0 +1,36 @@
+name: Build ZIP
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  zip:
+    if: contains(github.event.head_commit.message, '[zip]')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Read version from VERSION file
+        id: read_version
+        run: |
+          VERSION=$(cat VERSION | tr -d '\n')
+          DATE=$(date +"%Y-%m-%d-%H-%M-%S")
+          ZIP_NAME="HollowEngine-Special_Rig-v${VERSION}-${DATE}.zip"
+          echo "zip_name=${ZIP_NAME}" >> $GITHUB_OUTPUT
+
+      - name: Create zip archive
+        run: |
+          zip -r "${{ steps.read_version.outputs.zip_name }}" . \
+            -x ".git/*" \
+            -x "__pycache__/*" \
+            -x ".github/workflows/*"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.read_version.outputs.zip_name }}
+          path: ${{ steps.read_version.outputs.zip_name }}
