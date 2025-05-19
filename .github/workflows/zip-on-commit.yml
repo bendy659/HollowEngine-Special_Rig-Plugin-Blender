@@ -35,13 +35,13 @@ jobs:
         with:
           tag_name: "v${{ steps.read_version.outputs.version }}"
           name: "Release v${{ steps.read_version.outputs.version }}"
-          body: "Автоматическая сборка от ${{ github.actor }}"
+          body: "Automatic build от ${{ github.actor }}"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.HE_RIG_PLUGIN_BLENDER_UPLOAD }}
 
       - name: Upload ZIP to release
         uses: softprops/action-gh-release@v2
         with:
           files: ${{ steps.read_version.outputs.zip_name }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.HE_RIG_PLUGIN_BLENDER_UPLOAD }}
