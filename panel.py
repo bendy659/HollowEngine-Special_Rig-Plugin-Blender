@@ -75,5 +75,4 @@ class RigPanel(Panel):
     else:
       props.label(text="<Select Special Rig>")
       
-
     ### -------------- ###
