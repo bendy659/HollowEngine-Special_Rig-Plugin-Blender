@@ -1,5 +1,2 @@
-# folder
-/__pycache__
-
-# file
-/__pycache__/*
+# Blender python cache
+__pycache__/
