@@ -9,7 +9,7 @@ bl_info = {
   "author": "_BENDY659_",
   "version": (1, 0, 0),
   "blender": (4, 3, 0),
-  "location": "View3D",
+  "location": "File > New",
   "warning": "",
   "wiki_url": "",
   "category": "Rigging"
