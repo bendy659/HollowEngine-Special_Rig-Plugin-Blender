@@ -2,12 +2,18 @@ from bpy.props import StringProperty, EnumProperty
 
 # Properties #
 
-# Export path/format - Operator #
+# Export name/path/format - Operator #
+export_name = (
+  "he_rig_export_name",
+  StringProperty(
+    name="Export",
+    subtype="FILE_NAME",
+    default="rig"
+  )
+)
 export_path = (
   "he_rig_export_path",
   StringProperty(
-    name="Export path",
-    description="Folder to export the model",
     subtype="DIR_PATH",
     default=""
   )
@@ -16,7 +22,6 @@ export_format = (
   "he_rig_export_format",
   EnumProperty(
     name="Export format",
-    description="Choose export format",
     items=[
       ("GLTF", "gltf", "Export as glTF"),
       ("GLB", "glb", "Export to GLB")
@@ -26,6 +31,7 @@ export_format = (
 )
 
 list = [
+  export_name,
   export_path,
   export_format
 ]

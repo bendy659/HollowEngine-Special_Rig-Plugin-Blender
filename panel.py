@@ -22,10 +22,14 @@ class RigPanel(Panel):
 
     export.label(text="Export rig...")
     e_col = export.column()
-    e_col.prop(scene, "he_rig_export_path") # Path
 
-    e_col_row = e_col.row()
-    e_col_row.operator("he_rig.export", text=export_format)
+    e_col_row0 = e_col.row()
+    e_col_row0.prop(scene, "he_rig_export_name") # File name
+    e_col_row0.prop(scene, "he_rig_export_path") # Path
+
+    e_col_row1 = e_col.row()
+    e_col_row1.operator("he_rig.export", text=f"Export to [{export_format}]") # Export button
+    e_col_row1.prop(scene, "he_rig_export_format") # Export format
 
     ### ------ ###
 

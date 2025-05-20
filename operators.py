@@ -94,6 +94,7 @@ class Export_Button_Operator(Operator):
   def execute(self, context):
     scene = context.scene
 
+    name = scene.he_rig_export_name
     path = scene.he_rig_export_path
     format = scene.he_rig_export_format
 
@@ -117,16 +118,18 @@ class Export_Button_Operator(Operator):
       return {'CANCELLED'}
     # ----------------------------------------------------- #
 
-    filepath = os.path.join(path, f"model.{extension}")
+    filepath = os.path.join(path, f"{name}.{extension}")
     try:
       # Export scene #
       bpy.ops.export_scene.gltf(
         filepath=filepath,
+        use_renderable=True,
         export_format=export_format,
+        export_animations=True,
         export_normals=True,
         export_tangents=True,
         export_apply=True,
-        export_materials='PLACEHOLDER',
+        export_materials='EXPORT',
         export_draco_mesh_compression_enable=False,
         export_morph=True,
         export_morph_normal=True,
@@ -137,7 +140,6 @@ class Export_Button_Operator(Operator):
     except Exception as e:
       self.report({'ERROR'}, f"Export failed: {e}")
       return {'CANCELLED'}
-
 
 # ----
 
