@@ -86,25 +86,6 @@ class HE_RIG_File_Menu_Operator(Operator):
 
       return {'CANCELLED'}
 
-# Export path #
-class Export_Path_Operator(Operator):
-  bl_idname = "he_rig.export_path"
-  bl_label = "Select export folder"
-  bl_description = "Select a folder to export to"
-
-  directory: bpy.props.StringProperty(subtype="DIR_PATH")
-
-  def invoke(self, context, event):
-    context.window_manager.fileselect_add(self)
-    self.use_folder = True
-
-    return {'RUNNING_MODAL'}
-  
-  def execute(self, context):
-    context.scene.he_rig_export_path = self.directory
-
-    return {'FINISHED'}
-
 # Export button #
 class Export_Button_Operator(Operator):
   bl_idname = "he_rig.export"
@@ -118,46 +99,53 @@ class Export_Button_Operator(Operator):
 
     # Check selected path #
     if not path:
-      temp_dir = HE_RIG_File_Menu_Operator.temp_dir
+      temp_dir = getattr(HE_RIG_File_Menu_Operator, "temp_dir", None)
+      if not temp_dir or not os.path.isdir(temp_dir):
+        self.report({'ERROR'}, "Export path is not set and no valid temporary path found.")
+        return {'CANCELLED'}
       path = temp_dir
-      self.report({'WARNING'}, f"Export path not selected. Im use [{temp_dir}]!")
+      self.report({'WARNING'}, f"Export path not selected. Using temporary directory: [{temp_dir}]")
     # ------------------- #
 
-    filepath = os.path.join(path, f"model.{format[1]}")
-
-    # Check format selected #
+    # Map format string to extension and exporter constant #
+    extension = ""
     export_format = ""
-
     if format == "GLTF":
+      extension = "gltf"
       export_format = "GLTF_SEPARATE"
     elif format == "GLB":
+      extension = "glb"
       export_format = "GLB"
     else:
-      self.reort({'ERROR'}, f"Idk this export format [{format}]!")
-    # --------------------- #
-    
-    # Export scene #
-    bpy.ops.export_scene.gltf(
-      filepath=filepath,
-      export_format=export_format,
-      export_normals=True,
-      export_tangents=True,
-      export_apply=True,
-      export_materials='PLACEHOLDER',
-      export_draco_mesh_compression_enable=False,
-      export_morph=True,
-      export_morph_normal=True,
-      export_morph_tangent=True
-    )
-    # ------------ #
+      self.report({'ERROR'}, f"Unknown export format: {format}")
+      return {'CANCELLED'}
+    # ----------------------------------------------------- #
 
-    self.report({'INFO'}, f"Im exported to [{filepath}]")
-    return ['FINISHED']
+    filepath = os.path.join(path, f"model.{extension}")
+    try:
+      # Export scene #
+      bpy.ops.export_scene.gltf(
+        filepath=filepath,
+        export_format=export_format,
+        export_normals=True,
+        export_tangents=True,
+        export_apply=True,
+        export_materials='PLACEHOLDER',
+        export_draco_mesh_compression_enable=False,
+        export_morph=True,
+        export_morph_normal=True,
+        export_morph_tangent=True
+      )
+      self.report({'INFO'}, f"Model exported to: {filepath}")
+      return {'FINISHED'}
+    except Exception as e:
+      self.report({'ERROR'}, f"Export failed: {e}")
+      return {'CANCELLED'}
+
 
 # ----
 
 list = [
   HE_RIG_File_Menu_Operator,
-  Export_Path_Operator,
   Export_Button_Operator
 ]

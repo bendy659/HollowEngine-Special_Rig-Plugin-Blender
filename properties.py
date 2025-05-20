@@ -9,7 +9,7 @@ export_path = (
     name="Export path",
     description="Folder to export the model",
     subtype="DIR_PATH",
-    default= None
+    default=""
   )
 )
 export_format = (

@@ -3,19 +3,11 @@ from bpy.types import Scene
 
 from . import preference, file_menu, operators, properties, panel
 
-dir = os.path.dirname(__file__)
-version = os.path.join(dir, "VERSION")
-
-with open(version, "r", encoding="utf-8") as f:
-  verion_str = f.read().strip()
-
-version_tuple = tuple(map(str, verion_str.split(".")))
-
 bl_info = {
   "name": "HollowEngine - Special Rig | Plugin | v.1.0",
   "description": "Special plugin for HollowEngine Rig",
   "author": "_BENDY659_",
-  "version": version_tuple,
+  "version": (1, 0, 0),
   "blender": (4, 3, 0),
   "location": "View3D",
   "warning": "",
