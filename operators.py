@@ -7,10 +7,12 @@ from . import rig_data
 
 # Operators #
 
-# Add context button in file menu - Operator #
+# Add button in file menu #
 class HE_RIG_File_Menu_Operator(Operator):
   bl_idname = "he_rig.open_copy_project"
   bl_label = "[HE Rig] Open copy project"
+
+  temp_dir = ""
 
   def execute(self, context):
     dir = os.path.dirname(__file__)
@@ -45,6 +47,8 @@ class HE_RIG_File_Menu_Operator(Operator):
 
       # Generate temp location #
       temp = tempfile.gettempdir()
+
+      temp_dir = self.temp_dir
       temp_dir = os.path.join(temp, f"prm-copy-{id}")
 
       os.makedirs(temp_dir, exist_ok=True)
@@ -82,7 +86,78 @@ class HE_RIG_File_Menu_Operator(Operator):
 
       return {'CANCELLED'}
 
-# Operators - List #
+# Export path #
+class Export_Path_Operator(Operator):
+  bl_idname = "he_rig.export_path"
+  bl_label = "Select export folder"
+  bl_description = "Select a folder to export to"
+
+  directory: bpy.props.StringProperty(subtype="DIR_PATH")
+
+  def invoke(self, context, event):
+    context.window_manager.fileselect_add(self)
+    self.use_folder = True
+
+    return {'RUNNING_MODAL'}
+  
+  def execute(self, context):
+    context.scene.he_rig_export_path = self.directory
+
+    return {'FINISHED'}
+
+# Export button #
+class Export_Button_Operator(Operator):
+  bl_idname = "he_rig.export"
+  bl_label = "Export model"
+
+  def execute(self, context):
+    scene = context.scene
+
+    path = scene.he_rig_export_path
+    format = scene.he_rig_export_format
+
+    # Check selected path #
+    if not path:
+      temp_dir = HE_RIG_File_Menu_Operator.temp_dir
+      path = temp_dir
+      self.report({'WARNING'}, f"Export path not selected. Im use [{temp_dir}]!")
+    # ------------------- #
+
+    filepath = os.path.join(path, f"model.{format[1]}")
+
+    # Check format selected #
+    export_format = ""
+
+    if format == "GLTF":
+      export_format = "GLTF_SEPARATE"
+    elif format == "GLB":
+      export_format = "GLB"
+    else:
+      self.reort({'ERROR'}, f"Idk this export format [{format}]!")
+    # --------------------- #
+    
+    # Export scene #
+    bpy.ops.export_scene.gltf(
+      filepath=filepath,
+      export_format=export_format,
+      export_normals=True,
+      export_tangents=True,
+      export_apply=True,
+      export_materials='PLACEHOLDER',
+      export_draco_mesh_compression_enable=False,
+      export_morph=True,
+      export_morph_normal=True,
+      export_morph_tangent=True
+    )
+    # ------------ #
+
+    self.report({'INFO'}, f"Im exported to [{filepath}]")
+    return ['FINISHED']
+
+# ----
+
 list = [
-  HE_RIG_File_Menu_Operator
+  HE_RIG_File_Menu_Operator,
+  Export_Path_Operator,
+  Export_Button_Operator
 ]

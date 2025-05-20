@@ -9,7 +9,7 @@ export_path = (
     name="Export path",
     description="Folder to export the model",
     subtype="DIR_PATH",
-    default="./"
+    default= None
   )
 )
 export_format = (
@@ -24,3 +24,8 @@ export_format = (
     default="GLTF"
   )
 )
+
+list = [
+  export_path,
+  export_format
+]
