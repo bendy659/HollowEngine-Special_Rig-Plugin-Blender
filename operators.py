@@ -99,12 +99,8 @@ class Export_Button_Operator(Operator):
 
     # Check selected path #
     if not path:
-      temp_dir = getattr(HE_RIG_File_Menu_Operator, "temp_dir", None)
-      if not temp_dir or not os.path.isdir(temp_dir):
-        self.report({'ERROR'}, "Export path is not set and no valid temporary path found.")
-        return {'CANCELLED'}
-      path = temp_dir
-      self.report({'WARNING'}, f"Export path not selected. Using temporary directory: [{temp_dir}]")
+      path = bpy.path.abspath("//")
+      self.report({'WARNING'}, f"Export path not selected. Using project directory: [{path}]")
     # ------------------- #
 
     # Map format string to extension and exporter constant #
