@@ -14,6 +14,7 @@ export_name = (
 export_path = (
   "he_rig_export_path",
   StringProperty(
+    name="",
     subtype="DIR_PATH",
     default=""
   )
